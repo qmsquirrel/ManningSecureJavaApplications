@@ -89,7 +89,7 @@ public class Project1 extends Project {
 		Calendar cal = new GregorianCalendar();
 
 		// return the string with the calendar entry
-		return String.format(str + " passed on date %tF", cal);
+		return String.format("%s passed on date %tF", str, cal);
 	}
 
 	/*
