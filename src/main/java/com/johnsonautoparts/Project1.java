@@ -271,7 +271,13 @@ public class Project1 extends Project {
 	 */
 	public String regexClean(String str) {
 		String cleanText = str.toLowerCase(Locale.ENGLISH);
-		cleanText = cleanText.replace("script", "");
+		String oldCleanText = "";
+		// Remove text as long as the removal reduces the size of the text
+		while (oldCleanText.length() != cleanText.length())
+		{
+			oldCleanText = cleanText;
+			cleanText = cleanText.replace("script", "");
+		}
 
 		return cleanText;
 	}
