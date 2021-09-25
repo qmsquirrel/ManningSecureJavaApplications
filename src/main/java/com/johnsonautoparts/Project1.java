@@ -3,6 +3,7 @@ package com.johnsonautoparts;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -195,7 +196,7 @@ public class Project1 extends Project {
 	public boolean internationalization(String str) throws AppException {
 		System.out.println("\nTOUPPER: " + str.toUpperCase(Locale.ENGLISH) + "\n");
 		// check for script tag
-		if (str.toUpperCase().contains("SCRIPT")) {
+		if (str.toUpperCase(Locale.ENGLISH).contains("SCRIPT")) {
 			throw new AppException("internationalization() found script tag");
 		}
 
@@ -209,8 +210,9 @@ public class Project1 extends Project {
 		}
 
 		// write the text to file
+		Charset encoding = Charset.forName("UTF8");
 		try (PrintWriter writer = new PrintWriter(
-				new FileWriter(tempFile.toFile()))) {
+				new FileWriter(tempFile.toFile(), encoding))) {
 			writer.printf("Passed text: %s", str);
 			return true;
 		} catch (IOException ioe) {
