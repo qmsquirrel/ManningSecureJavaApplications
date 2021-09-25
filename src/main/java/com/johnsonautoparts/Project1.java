@@ -212,8 +212,8 @@ public class Project1 extends Project {
 		// write the text to file
 		Charset encoding = Charset.forName("UTF8");
 		try (PrintWriter writer = new PrintWriter(
-				new FileWriter(tempFile.toFile(), encoding))) {
-			writer.printf("Passed text: %s", str);
+				new FileWriter(tempFile.toFile()))) {
+			writer.printf("Passed text: %s", encoding);
 			return true;
 		} catch (IOException ioe) {
 			throw new AppException("IOException in internationalization(): "
