@@ -144,6 +144,8 @@ public class Project1 extends Project {
 	 * @return boolean
 	 */
 	public String searchErrorMessage(String search) {
+		// Sanitize search string
+		search = Pattern.quote(search);
 		String regex = ".* public user: \\w+ message: .*(" + search + ".*)";
 		Pattern searchPattern = Pattern.compile(regex);
 
