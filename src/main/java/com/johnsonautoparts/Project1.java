@@ -55,9 +55,11 @@ public class Project1 extends Project {
 	 * @return String
 	 */
 	public String normalizeString(String str) {
+		str = Normalizer.normalize(str, Form.NFKC);
 		Pattern pattern = Pattern.compile("[<&>]");
 		Matcher matcher = pattern.matcher(str);
 		String cleanStr = str;
+
 
 
 		// variable str is potentially dirty with HTML or JavaScript tags
