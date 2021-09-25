@@ -112,6 +112,8 @@ public class Project1 extends Project {
 	 */
 	public String validateString(String str) throws AppException {
 		String s = Normalizer.normalize(str, Form.NFKC);
+		// Deletes exclamation points
+		s = s.replaceAll("!", "");
 
 		// Simple pattern match to remove <script> tag
 		Pattern pattern = Pattern.compile("<script>");
@@ -121,9 +123,7 @@ public class Project1 extends Project {
 			throw new AppException("validateString() identified script tag",
 					"Invalid input");
 		}
-
-		// Deletes exclamation points
-		return s.replaceAll("!", "");
+		return s;
 	}
 
 	/*
