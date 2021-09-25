@@ -237,7 +237,11 @@ public class Project1 extends Project {
 	 * @param unsanitizedText
 	 */
 	public void logUnsanitizedText(String unsanitizedText) {
-		AppLogger.log("Error: " + unsanitizedText);
+		Pattern newline = Pattern.compile("\n");
+		Matcher matcher = newline.matcher(unsanitizedText);
+		String sanitizedText = matcher.replaceAll("\n  ");
+
+		AppLogger.log("Error: " + sanitizedText);
 	}
 
 	/*

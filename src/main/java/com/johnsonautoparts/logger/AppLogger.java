@@ -1,6 +1,8 @@
 package com.johnsonautoparts.logger;
 
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
  * NO CHANGES NEEDED ON THIS CLASS FOR THE liveProject
@@ -18,7 +20,13 @@ import java.util.logging.Logger;
 public class AppLogger {
 	private static final Logger logger = Logger.getLogger("JohnsonAutoParts");
 
+	private static String sanitize(String msg) {
+		Pattern newline = Pattern.compile("\n");
+		Matcher matcher = newline.matcher(msg);
+		return matcher.replaceAll("\n  ");
+	}
+
 	public static void log(String message) {
-		logger.info(message);
+		logger.info(sanitize(message));
 	}
 }
