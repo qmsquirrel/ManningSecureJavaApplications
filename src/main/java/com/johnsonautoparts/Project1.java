@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
@@ -562,7 +563,7 @@ public class Project1 extends Project {
 	 */
 	public int randomNumGenerate(int range) {
 		// seed the random number generator
-		Random number = new Random(99L);
+		Random number = new SecureRandom();
 
 		// generate a random number based on the range given
 		return number.nextInt(range);
