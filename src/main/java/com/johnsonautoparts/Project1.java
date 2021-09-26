@@ -496,13 +496,22 @@ public class Project1 extends Project {
 		double compareTaskId = 6.1;
 
 		try {
-			double userInput = Double.parseDouble(num);
+			double userInput;
+			try {
+				userInput = Double.parseDouble(num);
+			} catch (NumberFormatException e) {
+				// Handle input format error
+				throw new AppException(
+						"Cannot parse string"
+				);
+			}
+
 
 			//returns NaN if input is infinity
 			double result = Math.cos(compareTaskId / userInput);
 
 			// check if we received the expected result
-			return (result == Double.NaN);
+			return (Double.isNaN(result));
 
 		} catch (NumberFormatException nfe) {
 			throw new AppException(
