@@ -469,7 +469,11 @@ public class Project1 extends Project {
 	public int divideTask(int monthlyTasks) throws AppException {
 		int monthly = 12;
 
-		return monthly / monthlyTasks;
+		if (monthlyTasks == 0) {
+			throw new AppException("Division by zero");
+		} else {
+			return monthly / monthlyTasks;
+		}
 	}
 
 	/*
