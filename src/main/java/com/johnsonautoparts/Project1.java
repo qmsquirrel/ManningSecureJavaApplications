@@ -413,7 +413,7 @@ public class Project1 extends Project {
 				byte[] data = new byte[1024];
 				dis.readFully(data);
 
-				return new String(data);
+				return new String(data, "UTF-16LE");
 			}
 		} catch (IOException ioe) {
 			throw new AppException(
