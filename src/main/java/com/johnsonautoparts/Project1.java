@@ -435,12 +435,12 @@ public class Project1 extends Project {
 	 * @param num
 	 * @return int
 	 */
-	public int calcTotalValue(int num) {
+	public int calcTotalValue(int num) throws ArithmeticException {
 		int multiplier = 20;
 		int addedCost = 1147483647;
 
-		int addCost = num + addedCost;
-		int multiCost = num * multiplier;
+		int addCost = Math.addExact(num ,addedCost);
+		int multiCost = Math.multiplyExact(num, multiplier);
 
 		// return the great of the add or multiply
 		if (addCost > multiCost) {
