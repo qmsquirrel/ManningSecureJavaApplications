@@ -358,8 +358,8 @@ public class Project1 extends Project {
 		byte[] decodedBytes = Base64.getDecoder().decode(base64Str);
 
 		// convert bytes to string
-		String s = Arrays.toString(decodedBytes);
-		byte[] byteArray = s.getBytes();
+		String s = Base64.getEncoder().encodeToString(decodedBytes);
+		byte[] byteArray = Base64.getDecoder().decode(s);
 
 		// convert string bytes to BigInt
 		return new BigInteger(byteArray);
