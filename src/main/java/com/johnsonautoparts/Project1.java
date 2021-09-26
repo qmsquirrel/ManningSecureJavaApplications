@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 
 import com.johnsonautoparts.exception.AppException;
 import com.johnsonautoparts.logger.AppLogger;
+import org.owasp.encoder.Encode;
 
 /*
  * 
@@ -388,19 +389,7 @@ public class Project1 extends Project {
 	 * @return String
 	 */
 	public String cleanBadHTMLTags(String str) {
-		Pattern pattern = Pattern.compile("[<&>]");
-		Matcher matcher = pattern.matcher(str);
-
-		String cleanStr = str;
-
-		// variable str is potentially dirty with HTML or JavaScript tags so
-		// remove left, right, or amp
-		if (matcher.find()) {
-			cleanStr = str.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-					.replaceAll(">", "&gt;");
-		}
-
-		return cleanStr;
+		return Encode.forHtml(str);
 	}
 
 	/*
