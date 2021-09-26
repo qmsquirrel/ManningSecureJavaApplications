@@ -526,7 +526,7 @@ public class Project1 extends Project {
 	 * TITLE: String representation of numbers
 	 * 
 	 * RISK: String representations of numbers can return unexpected results
-	 * based on the precision or other other factors such as scientific
+	 * based on the precision or other factors such as scientific
 	 * notation. Attempting to compare the string representation is not a secure
 	 * method and can lead to unexpected results or bypasses of checks.
 	 * 
@@ -537,25 +537,14 @@ public class Project1 extends Project {
 	 */
 	public boolean numStringCompare(int num) {
 
-		String s = Double.toString(num / 1000.0);
+		BigDecimal d = new BigDecimal(Double.valueOf(num / 1000.0).toString());
 
 		// check for comparison to validate
-		if (s.equals("0.001")) {
+		if (d.compareTo(new BigDecimal("0.001")) == 0) {
 			return true;
+		} else {
+			return false;
 		}
-		// string data may be in a slightly different format so perform additional
-		// check if we can match by removing any trailing zeroes
-		else {
-			s = s.replaceFirst("[.0]*$", "");
-			if (s.equals("0.001")) {
-				return true;
-			}
-			// neither check matched so return false
-			else {
-				return false;
-			}
-		}
-
 	}
 
 	/*
