@@ -311,17 +311,17 @@ public class Project1 extends Project {
 
 		// read the file contents
 		try (FileInputStream fios = new FileInputStream(path.toString())) {
-			byte[] data = new byte[MAX_READ_SIZE + 1];
+			Reader reader = new InputStreamReader(fios, "UTF-8");
+			char[] data = new char[MAX_READ_SIZE + 1];
 			int offset = 0;
-			int bytesRead = 0;
+			int charsRead = 0;
 
 			// append the data into the string
 			String readStr = new String();
 			
-			while ((bytesRead = fios.read(data, offset, data.length - offset)) != -1) {
-				readStr += new String(data, offset, bytesRead, "UTF-8");
-				
-				offset += bytesRead;
+			while ((charsRead = reader.read(data, offset, data.length - offset)) != -1) {
+				readStr += new String(data, offset, charsRead);
+				offset += charsRead;
 				if (offset >= data.length) {
 					throw new IOException("Too much input");
 				}
