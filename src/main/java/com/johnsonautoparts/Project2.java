@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -177,6 +179,12 @@ public class Project2 extends Project {
 	 */
 	public void createFile(String fileName) throws AppException {
 		Path tempPath = null;
+		Pattern pattern = Pattern.compile("[^A-Za-z0-9._]");
+		Matcher matcher = pattern.matcher(fileName);
+		if (matcher.find()) {
+			// File name contains bad chars; handle error
+			throw new AppException("createFile received invalid file name");
+		}
 		try {
 			tempPath = Paths.get("temp", "upload", fileName);
 		} catch (InvalidPathException ipe) {
