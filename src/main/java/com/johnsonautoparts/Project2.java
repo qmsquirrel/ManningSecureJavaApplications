@@ -86,20 +86,17 @@ public class Project2 extends Project {
 
 		// execute the SQL and return the count of the inventory
 		try {
-			String sql = "SELECT COUNT(id) FROM inventory WHERE id = " + id;
-
-			try (Statement stmt = connection.createStatement()) {
-				try (ResultSet rs = stmt.executeQuery(sql)) {
-
-					if (rs.next()) {
-						return rs.getInt(1);
-					} else {
-						throw new AppException(
-								"dbInventory did not return any results");
-					}
-				} // end resultset
-			} // end stmt
-
+			String sql = "SELECT COUNT(id) FROM inventory WHERE id = ?";
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, id);
+			try (ResultSet rs = stmt.executeQuery(sql)) {
+				if (rs.next()) {
+					return rs.getInt(1);
+				} else {
+					throw new AppException(
+							"dbInventory did not return any results");
+				}
+			} // end resultset
 		} catch (SQLException se) {
 			throw new AppException(
 					"dbInventory caught SQLException: " + se.getMessage());
