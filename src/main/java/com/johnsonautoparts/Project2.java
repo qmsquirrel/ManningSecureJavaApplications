@@ -83,11 +83,9 @@ public class Project2 extends Project {
 		if (connection == null) {
 			throw new AppException("dbQuery had stale connection");
 		}
-
+		String sql = "SELECT COUNT(id) FROM inventory WHERE id = ?";
 		// execute the SQL and return the count of the inventory
-		try {
-			String sql = "SELECT COUNT(id) FROM inventory WHERE id = ?";
-			PreparedStatement stmt = connection.prepareStatement(sql);
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			stmt.setString(1, id);
 			try (ResultSet rs = stmt.executeQuery(sql)) {
 				if (rs.next()) {
@@ -135,8 +133,9 @@ public class Project2 extends Project {
 
 		// execute the SQL and return the count of the tasks
 		try {
-			String sql = "SELECT COUNT(task_name) FROM schedule WHERE task_name = '" + taskName + "'";
+			String sql = "SELECT COUNT(task_name) FROM schedule WHERE task_name = ?";
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+				stmt.setString(1, taskName);
 				try (ResultSet rs = stmt.executeQuery()) {
 
 					if (rs.next()) {
