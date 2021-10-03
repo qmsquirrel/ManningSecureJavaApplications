@@ -426,6 +426,11 @@ public class Project2 extends Project {
 		// execute the OS command
 		try {
 			Runtime rt = Runtime.getRuntime();
+			if (!Pattern.matches("[0-9A-Za-z]+", cmd)) {
+				throw new AppException(
+						"Illegal command"
+				);
+			}
 			Process proc = rt.exec(new String[]{"sh", "-c", cmd + " "});
 			int result = proc.waitFor();
 
