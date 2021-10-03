@@ -178,8 +178,7 @@ public class Project2 extends Project {
 	 */
 	public void createFile(String fileName) throws AppException {
 		Path tempPath = null;
-		Pattern pattern = Pattern.compile("[^A-Za-z0-9._]");
-		Matcher matcher = pattern.matcher(fileName);
+		Path tempDir = Paths.get("temp", "upload");
 		if (isIncompatibleFilename(fileName)) {
 			// File name contains bad chars; handle error
 			throw new AppException("createFile received invalid file name");
@@ -212,7 +211,7 @@ public class Project2 extends Project {
 		 * on creating a safe filename
 		 */
 		// check the path
-		String safePathStr = makeSafePath(tempPath.toString());
+		String safePathStr = makeSafePath(tempPath, tempDir);
 
 		// write the session_data content to the file
 		Path safePath = Paths.get(safePathStr);
@@ -259,8 +258,18 @@ public class Project2 extends Project {
 	 * @param dirty
 	 * @return String
 	 */
-	public String makeSafePath(String dirty) {
-		return dirty.replaceAll("\\.\\." + File.separator, "_");
+	public String makeSafePath(Path dirty, Path containingDir) throws AppException {
+		try {
+			String canonicalPathFile = dirty.toFile().getCanonicalPath();
+			String canonicalPathContainingDir = containingDir.toFile().getCanonicalPath();
+			if (!canonicalPathFile.startsWith(canonicalPathContainingDir)) {
+				throw new AppException("makeSafePath: given file location not inside of proper directory");
+			}
+			return canonicalPathFile;
+		} catch (IOException e) {
+			throw new AppException(
+					"makeSafePath caught IO error: " + e.getMessage());
+		}
 	}
 
 	/*
