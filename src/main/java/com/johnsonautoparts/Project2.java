@@ -291,6 +291,11 @@ public class Project2 extends Project {
 	public String unzip(String fileName) throws AppException {
 		final int BUFFER = 512;
 		final int OVERFLOW = 0x1600000; // 25MB
+		final long TOOBIG = 0x6400000; // Max size of unzipped data, 100MB
+		final int TOOMANY = 1024; // Files
+
+		int entries = 0;
+		long total = 0;
 		Path zipPath = null;
 		try {
 			zipPath = Paths.get("temp", "zip", fileName);
@@ -323,27 +328,41 @@ public class Project2 extends Project {
 
 					// output file is path plus entry
 					Path entryPath = null;
+					String canonicalEntryPath = null;
 					try {
 						entryPath = Paths.get(zipPath.toString(),
 								entry.getName());
+						canonicalEntryPath = validateFilename(entryPath.toString(), zipPath.toString());
 					} catch (InvalidPathException ipe) {
 						throw new AppException("unzip contains invalid entry: "
 								+ ipe.getMessage());
 					}
 
 					try (FileOutputStream fos = new FileOutputStream(
-							entryPath.toString())) {
+							canonicalEntryPath)) {
 						try (BufferedOutputStream dest = new BufferedOutputStream(
 								fos, BUFFER)) {
-							while ((count = zis.read(data, 0, BUFFER)) != -1) {
+							while (total + BUFFER <= TOOBIG && (count = zis.read(data, 0, BUFFER)) != -1) {
 								dest.write(data, 0, count);
+								total+= count;
 							}
 							dest.flush();
 
 							zis.closeEntry();
+							if (!entry.isDirectory()) {
+								entries++;
+							}
 						} // end bufferedoutputstream
 					} // end fileoutputstream
 
+					if (entries > TOOMANY) {
+						throw new AppException(
+								"Too many files in the zip file");
+					}
+
+					if (total + BUFFER > TOOBIG) {
+						throw new AppException("File being unzipped is too big.");
+					}
 				} // end while entry
 
 			} // end try zis
@@ -367,6 +386,27 @@ public class Project2 extends Project {
 
 		// directory to the extracted zip
 		return zipPath.toString();
+	}
+
+	private String validateFilename(String filename, String intendedDir)
+			throws AppException {
+
+		String canonicalPath = null;
+		String canonicalID = null;
+		try {
+			File f = new File(filename);
+			canonicalPath = f.getCanonicalPath();
+			File iD = new File(intendedDir);
+			canonicalID = iD.getCanonicalPath();
+		} catch (IOException e) {
+			throw new AppException("IOError : " + e.getMessage());
+		}
+
+		if (canonicalPath.startsWith(canonicalID)) {
+			return canonicalPath;
+		} else {
+			throw new AppException("File is outside extraction target directory.");
+		}
 	}
 
 	/*
