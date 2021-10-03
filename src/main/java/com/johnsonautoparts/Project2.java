@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.Normalizer;
 import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +34,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import com.johnsonautoparts.servlet.ServletUtilities;
+import org.owasp.encoder.Encode;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -476,6 +478,8 @@ public class Project2 extends Project {
 		try {
 			ScriptEngineManager manager = new ScriptEngineManager();
 			ScriptEngine engine = manager.getEngineByName("javascript");
+			printMessage = Normalizer.normalize(printMessage, Normalizer.Form.NFKC);
+			printMessage = Encode.forJavaScript(printMessage);
 			Object ret = engine.eval("print('<tag>" + printMessage + "</tag>')");
 
 			// make sure data was returned
