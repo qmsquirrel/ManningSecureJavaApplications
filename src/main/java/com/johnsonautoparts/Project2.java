@@ -24,9 +24,11 @@ import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.*;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathException;
@@ -46,6 +48,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.johnsonautoparts.exception.AppException;
 import com.johnsonautoparts.logger.AppLogger;
 import com.johnsonautoparts.servlet.SessionConstant;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 /*
  * 
@@ -561,7 +566,7 @@ public class Project2 extends Project {
 	 * @param xml
 	 * @return Document
 	 */
-	public Document validateXML(String xml) throws AppException {
+	public Document validateXML(String xml) throws AppException, IOException {
 		Path xsdPath = null;
 		try {
 			xsdPath = Paths.get(System.getProperty("catalina.base"), "webapps",
@@ -570,6 +575,33 @@ public class Project2 extends Project {
 		} catch (InvalidPathException ipe) {
 			throw new AppException("validateXML cannot location schema.xsd: "
 					+ ipe.getMessage());
+		}
+
+		// Build a validating SAX parser using our schema
+		SchemaFactory sf = SchemaFactory
+				.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		DefaultHandler defHandler = new DefaultHandler() {
+			public void warning(SAXParseException s) throws SAXParseException {
+				throw s;
+			}
+			public void error(SAXParseException s) throws SAXParseException {
+				throw s;
+			}
+			public void fatalError(SAXParseException s) throws SAXParseException {
+				throw s;
+			}
+		};
+		StreamSource ss = new StreamSource(xsdPath.toFile());
+		try {
+			Schema schema = sf.newSchema(ss);
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			spf.setSchema(schema);
+			SAXParser saxParser = spf.newSAXParser();
+			saxParser.parse(xml, defHandler);
+		} catch (ParserConfigurationException x) {
+			throw new IOException("Unable to validate XML", x);
+		} catch (SAXException x) {
+			throw new IOException("Invalid quantity", x);
 		}
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
