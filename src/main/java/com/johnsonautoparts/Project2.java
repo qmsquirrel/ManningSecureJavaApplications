@@ -520,9 +520,10 @@ public class Project2 extends Project {
 	 */
 	public String createXML(String partQuantity) throws AppException {
 		// build the XML document
+		int quantity = Integer.parseUnsignedInt(partQuantity);
 		String xmlContent = "<?xml version=\"1.0\"?>" + "<item>\n"
 				+ "<title>Widget</title>\n" + "<price>500</price>\n"
-				+ "<quantity>" + partQuantity + "</quantity>" + "</item>";
+				+ "<quantity>" + quantity + "</quantity>" + "</item>";
 
 		// build the XML document from the string content
 		Document doc = null;
