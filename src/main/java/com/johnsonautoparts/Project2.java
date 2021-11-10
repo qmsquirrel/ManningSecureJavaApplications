@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Normalizer;
 import java.util.Base64;
+import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -25,15 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.*;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathException;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.*;
 
 import com.johnsonautoparts.servlet.ServletUtilities;
 import org.owasp.encoder.Encode;
@@ -711,9 +709,12 @@ public class Project2 extends Project {
 			// create an XPath query
 			XPathFactory factory = XPathFactory.newInstance();
 			XPath xpath = factory.newXPath();
+			MapVariableResolver resolver = new MapVariableResolver();
+			xpath.setXPathVariableResolver(resolver);
 			XPathExpression expr = xpath
-					.compile("//users/user[username/text()='" + username
-							+ "' and password/text()='" + passHash + "' ]");
+					.compile("//users/user[@username=$username and @password=$password]");
+			resolver.addVariable(null, "username", username);
+			resolver.addVariable(null, "password", passHash);
 
 			// obtain the results
 			Object result = expr.evaluate(doc, XPathConstants.NODESET);
@@ -728,6 +729,25 @@ public class Project2 extends Project {
 		} catch (IOException ioe) {
 			throw new AppException(
 					"xpathLogin caught IO exception: " + ioe.getMessage());
+		}
+	}
+
+	class MapVariableResolver implements XPathVariableResolver {
+
+		private Hashtable variables = new Hashtable();
+
+		public void addVariable(String namespaceURI, String localName, Object value) {
+			addVariable(new QName(namespaceURI, localName), value);
+		}
+
+		public void addVariable(QName name, Object value) {
+			variables.put(name, value);
+		}
+
+		@Override
+		public Object resolveVariable(QName variableName) {
+			Object retval = variables.get(variableName);
+			return retval;
 		}
 	}
 
