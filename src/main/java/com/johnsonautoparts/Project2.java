@@ -12,8 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Normalizer;
-import java.util.Base64;
-import java.util.Hashtable;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -790,7 +789,8 @@ public class Project2 extends Project {
 				decodedBytes)) {
 
 			// wrap the OIS in the try to autoclose
-			try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+			Set whitelist = new HashSet<String>(Arrays.asList(new String[]{"GoodClass1","GoodClass2"}));
+			try (WhitelistedObjectInputStream ois = new WhitelistedObjectInputStream(bais, whitelist)) {
 				return ois.readObject();
 			} catch (StreamCorruptedException sce) {
 				throw new AppException(
@@ -807,6 +807,23 @@ public class Project2 extends Project {
 					+ ioe.getMessage());
 		}
 
+	}
+
+	class WhitelistedObjectInputStream extends ObjectInputStream {
+		public Set whitelist;
+
+		public WhitelistedObjectInputStream(InputStream inputStream, Set wl) throws IOException {
+			super(inputStream);
+			whitelist = wl;
+		}
+
+		@Override
+		protected Class<?> resolveClass(ObjectStreamClass cls) throws IOException, ClassNotFoundException {
+			if (!whitelist.contains(cls.getName())) {
+				throw new InvalidClassException("Unexpected serialized class", cls.getName());
+			}
+			return super.resolveClass(cls);
+		}
 	}
 
 	/*
