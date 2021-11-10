@@ -839,7 +839,7 @@ public class Project2 extends Project {
 	 * @param data String of the json to deserialize
 	 * @return Object to deserialize
 	 */
-	public Object deserializeJson(String data) throws AppException {
+	public User deserializeJson(String data) throws AppException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enableDefaultTyping();
 
@@ -849,7 +849,7 @@ public class Project2 extends Project {
 
 		// deserialize the object and return
 		try {
-			return (User) mapper.readValue(data, Object.class);
+			return mapper.readValue(data, User.class);
 		} catch (IOException ioe) {
 			throw new AppException("deserializationJson caught IOException: "
 					+ ioe.getMessage());
