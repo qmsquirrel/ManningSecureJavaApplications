@@ -638,6 +638,12 @@ public class Project2 extends Project {
 	 */
 	public Document parseXML(String xml) throws AppException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try {
+			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+		} catch (ParserConfigurationException e) {
+			throw new AppException(
+				"Can't configure Parser: " + e.getMessage());
+		}
 
 		// the code for this XML parse is very rudimentary but is here for
 		// demonstration
