@@ -100,7 +100,7 @@ public class Project3 extends Project {
 	 * @param filePath
 	 * @return String contents of the file or information about the error
 	 */
-	public String dataExposure(String filePath) {
+	public String dataExposure(String filePath) throws AppException {
 		try {
 			Path path = Paths.get(filePath);
 
@@ -112,10 +112,10 @@ public class Project3 extends Project {
 
 				return sb.toString();
 			} catch (IOException ex) {
-				return ("Error reading file: " + ex.getMessage());
+				throw new AppException("Error reading file: " + ex.getMessage());
 			}
 		} catch (InvalidPathException ipe) {
-			return ("Error with requested file: " + ipe.getMessage());
+			throw new AppException("Error with requested file: " + ipe.getMessage());
 		}
 	}
 
