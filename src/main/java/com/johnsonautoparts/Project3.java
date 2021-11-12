@@ -149,11 +149,11 @@ public class Project3 extends Project {
 			if (userDataObj instanceof String) {
 				return (String) userDataObj;
 			} else {
-				System.err.println("no user data in session");
+				AppLogger.log("no user data in session");
 				return null;
 			}
 		} catch (IllegalStateException se) {
-			System.err.println(
+			AppLogger.log(
 					"getSession() caused IllegalState: " + se.getMessage());
 		}
 
