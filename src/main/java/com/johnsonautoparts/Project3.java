@@ -272,9 +272,15 @@ public class Project3 extends Project {
 			throw new AppException(
 					"flowHandling caught IO exception: " + ioe.getMessage());
 		} finally {
-			writer.close();
-			return true;
+			try {
+				writer.close();
+			} catch (IOException ie) {
+				throw new AppException(
+						"flowHandling caught IO exception: " + ie.getMessage());
+			}
 		}
+
+		return true;
 	}
 
 	/*
