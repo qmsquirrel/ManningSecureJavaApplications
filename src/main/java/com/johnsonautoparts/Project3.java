@@ -196,8 +196,6 @@ public class Project3 extends Project {
 			accessed = (Integer) accessedObj;
 		}
 
-		// increment the docs_accessed in the session attribute
-		session.setAttribute(SessionConstant.DOCS_ACCESSED, accessed + 1);
 
 		// get the content from the database
 		try {
@@ -221,6 +219,8 @@ public class Project3 extends Project {
 
 					// return the count
 					if (rs.next()) {
+						// increment the docs_accessed in the session attribute
+						session.setAttribute(SessionConstant.DOCS_ACCESSED, accessed + 1);
 						return rs.getString(1);
 					} else {
 						throw new AppException("restoreState did not return any results");
