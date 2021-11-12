@@ -77,6 +77,7 @@ public class Project3 extends Project {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 			AppLogger.log("login IO error: " + ioe.getMessage());
+			throw new AppException("login exception: " + ioe.getMessage());
 		} catch (ServletException se) {
 			throw new AppException("login exception: " + se.getMessage());
 		}
