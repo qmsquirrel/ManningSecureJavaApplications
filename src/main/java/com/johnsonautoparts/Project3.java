@@ -134,7 +134,7 @@ public class Project3 extends Project {
 	 * @param userData
 	 * @return String
 	 */
-	public String exceptionLogging(String userData) {
+	public String exceptionLogging(String userData) throws AppException {
 		// get session data
 		try {
 			HttpSession session = httpRequest.getSession();
@@ -150,16 +150,16 @@ public class Project3 extends Project {
 				return (String) userDataObj;
 			} else {
 				AppLogger.log("no user data in session");
-				return null;
+				throw new AppException("No user data in session");
 			}
-		} catch (IllegalStateException se) {
+		} catch (IllegalStateException | AppException se) {
 			AppLogger.log(
 					"getSession() caused IllegalState: " + se.getMessage());
+			throw new AppException("Illegal state excepiton");
 		}
 
 		// not sure how this point was reached so return null and let the
 		// calling function handle
-		return null;
 	}
 
 	/*
